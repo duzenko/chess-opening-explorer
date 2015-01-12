@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Практика шахматных дебютов</string>
+    <string name="app_name_short">Практика дебютов</string>
+    <string name="action_settings">Настройки</string>
+    <string name="loading">Загрузка&#8230;</string>
+    <string name="downloading">Распаковка базы данных на карту памяти&#8230;</string>
+    
+    <string name="text_paused_cellular">Would you like to enable downloading over cellular connections? Depending on your data plan, this may cost you money.</string>
+    <string name="text_paused_cellular_2">If you choose not to enable downloading over cellular connections, the download will automatically resume when wi-fi is available.</string>
+    <string name="text_button_resume_cellular">Resume download</string>
+    <string name="text_button_wifi_settings">Wi-Fi settings</string>
+    <string name="text_verifying_download">Verifying Download</string>
+    <string name="text_validation_complete">XAPK File Validation Complete.  Select OK to exit.</string>
+    <string name="text_validation_failed">XAPK File Validation Failed.</string>
+    <string name="text_button_pause">Pause Download</string>
+    <string name="text_button_resume">Resume Download</string>
+    <string name="text_button_cancel">Cancel</string>
+    <string name="text_button_cancel_verify">Cancel Verification</string>
+    
+    <string name="message_subject">Android device log</string>
+    <string name="acquiring_log_progress_dialog_message">Acquiring log from the system&#8230;</string>
+    <string name="chooser_title">"Select an application to send the log"</string>
+    <string name="failed_to_get_log_message">"Failed to get the log from the system."</string>
+    <string name="main_dialog_text">"This application will attempt to collect the device log.
+The collected log will be sent using an application of your choice.
+You also will have an opportunity to see and modify the data being sent."
+    </string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="alternativeBoard">Альтернативный вид доски</string>
+    <string name="search">Искать дебют в Google</string>
+    <string name="ecoNotFound">Имя дебюта не определено. Поиск не возможен</string>
+    
+    
+</resources>
