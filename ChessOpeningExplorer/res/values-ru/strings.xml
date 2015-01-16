@@ -31,6 +31,11 @@ You also will have an opportunity to see and modify the data being sent."
     <string name="alternativeBoard">Альтернативный вид доски</string>
     <string name="search">Искать дебют в Google</string>
     <string name="ecoNotFound">Имя дебюта не определено. Поиск не возможен</string>
+    <string name="title_activity_play">CuckooChess</string>
+    <string name="play">Играть с CuckooChess</string>
+    <string name="aboutCuckoo">О CuckooChess&#8230;</string>
+    <string name="loadingCuckoo">Загрузка CuckooChess&#8230;</string>
+    <string name="action_undo">Переходить</string>
     
     
 </resources>

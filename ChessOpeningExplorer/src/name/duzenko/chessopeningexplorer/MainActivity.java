@@ -5,6 +5,7 @@ import java.io.RandomAccessFile;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -117,6 +118,10 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	    	optionsStack.pieceImages.clear();
 			break;
 
+		case R.id.action_play:
+			startPlay();
+			break;
+
 		case R.id.action_search:
 			if (optionsStack.ecoFound == null) {
 				Toast.makeText(this, R.string.ecoNotFound, Toast.LENGTH_LONG).show();
@@ -212,6 +217,17 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	public void BoardClick(View view) {
 		optionsStack.flippedBoard = !optionsStack.flippedBoard;
 		refresh();
+	}
+	
+	void startPlay() {
+		SharedPreferences settings = getSharedPreferences("", MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString("startFEN", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+		editor.putString("moves", moveSeq);
+		editor.putBoolean("flipped", optionsStack.flippedBoard);
+		editor.commit();
+		Intent intent = new Intent(MainActivity.this, PlayActivity.class);
+		startActivity(intent);
 	}
 
 }
