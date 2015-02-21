@@ -23,7 +23,6 @@ import com.google.android.vending.expansion.downloader.Helpers;
 import com.google.android.vending.expansion.downloader.IDownloaderClient;
 import com.google.android.vending.expansion.downloader.IDownloaderService;
 import com.google.android.vending.expansion.downloader.IStub;
-
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -37,9 +36,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import name.duzenko.chessopeningexplorer.ExtractTask;
-import name.duzenko.chessopeningexplorer.LoaderActivity;
 import name.duzenko.chessopeningexplorer.R;
+import name.duzenko.chessopeningexplorer.db.ExtractTask;
+import name.duzenko.chessopeningexplorer.db.LoaderActivity;
 
 /**
  * This is sample code for a project built against the downloader library. It
@@ -208,13 +207,9 @@ public class SampleDownloaderActivity extends Activity implements IDownloaderCli
         }
 
             try {
-                Intent launchIntent = SampleDownloaderActivity.this
-                        .getIntent();
-                Intent intentToLaunchThisActivityFromNotification = new Intent(
-                        SampleDownloaderActivity
-                        .this, SampleDownloaderActivity.this.getClass());
-                intentToLaunchThisActivityFromNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent launchIntent = SampleDownloaderActivity.this.getIntent();
+                Intent intentToLaunchThisActivityFromNotification = new Intent(SampleDownloaderActivity.this, SampleDownloaderActivity.this.getClass());
+                intentToLaunchThisActivityFromNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intentToLaunchThisActivityFromNotification.setAction(launchIntent.getAction());
 
                 if (launchIntent.getCategories() != null) {
@@ -240,7 +235,10 @@ public class SampleDownloaderActivity extends Activity implements IDownloaderCli
                     return;
                 } // otherwise, download not needed so we fall through to
                   // starting the movie
-                System.out.println("NO_DOWNLOAD_REQUIRED");
+                {
+                	System.out.println("NO_DOWNLOAD_REQUIRED");
+                	finish();
+                }
             } catch (NameNotFoundException e) {
                 Log.e(LOG_TAG, "Cannot find own package! MAYDAY!");
                 e.printStackTrace();
@@ -248,7 +246,7 @@ public class SampleDownloaderActivity extends Activity implements IDownloaderCli
 
     }
 
-    /**
+	/**
      * Connect the stub to our service on start.
      */
     @Override
@@ -384,11 +382,8 @@ public class SampleDownloaderActivity extends Activity implements IDownloaderCli
         mPB.setMax((int) (progress.mOverallTotal >> 8));
         mPB.setProgress((int) (progress.mOverallProgress >> 8));
         mProgressPercent.setText(Long.toString(progress.mOverallProgress
-                * 100 /
-                progress.mOverallTotal) + "%");
-        mProgressFraction.setText(Helpers.getDownloadProgressString
-                (progress.mOverallProgress,
-                        progress.mOverallTotal));
+                * 100 / progress.mOverallTotal) + "%");
+        mProgressFraction.setText(Helpers.getDownloadProgressString(progress.mOverallProgress, progress.mOverallTotal));
     }
 
     @Override

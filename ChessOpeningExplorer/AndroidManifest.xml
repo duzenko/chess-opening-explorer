@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="name.duzenko.chessopeningexplorer"
-    android:versionCode="19"
-    android:versionName="1.9" >
+    android:installLocation="preferExternal"
+    android:versionCode="20"
+    android:versionName="1.9.1" >
 
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="19" />
+    
     <!-- Required to access Google Play Licensing -->
     <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
 
@@ -49,7 +51,7 @@
             android:screenOrientation="sensorPortrait" >
         </activity>
         <activity
-            android:name=".LoaderActivity"
+            android:name="name.duzenko.chessopeningexplorer.db.LoaderActivity"
             android:label="@string/app_name"
             android:noHistory="true" >
             <intent-filter>
@@ -63,7 +65,7 @@
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name=".PlayActivity"
+            android:name="name.duzenko.chessopeningexplorer.play.PlayActivity"
             android:label="@string/title_activity_play" >
         </activity>
     </application>

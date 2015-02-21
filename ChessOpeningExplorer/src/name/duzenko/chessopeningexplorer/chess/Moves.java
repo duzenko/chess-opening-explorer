@@ -1,9 +1,12 @@
-package name.duzenko.chessopeningexplorer;
+package name.duzenko.chessopeningexplorer.chess;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Stack;
 
+import name.duzenko.chessopeningexplorer.AppPreferences;
+import name.duzenko.chessopeningexplorer.R;
+import name.duzenko.chessopeningexplorer.db.ChessOption;
 import android.content.res.AssetManager;
 import android.content.res.AssetManager.AssetInputStream;
 import android.content.res.Resources;
@@ -15,18 +18,20 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 @SuppressWarnings("serial")
-public class Moves extends Stack<Integer> {
+public class Moves extends Stack<ChessOption> {
 	
-	HashMap<String, Bitmap> pieceImages = new HashMap<String, Bitmap>();
-	Bitmap chessBoard, output;
+	public HashMap<String, Bitmap> pieceImages = new HashMap<String, Bitmap>();
+	public Bitmap chessBoard;
+	Bitmap output;
 	float cellSize;
 	RectF dstPiece = new RectF();
 	
-	StringBuilder movesWithNumbers = new StringBuilder();
-	String eco[][], ecoFound[];
+	public StringBuilder movesWithNumbers = new StringBuilder();
+	String eco[][];
+	public String ecoFound[];
 	Paint paint = new Paint();
 	
-	Bitmap generateImage(String moveString, Resources res, AssetManager assetManager) {
+	public Bitmap generateImage(String moveString, Resources res, AssetManager assetManager) {
 		movesWithNumbers.setLength(0);
 		Pieces pieces = new Pieces();
 		if(moveString.length()>0) {
@@ -124,19 +129,6 @@ public class Moves extends Stack<Integer> {
 				}
 			}
 		}
-		/*if (ecoNo<0)
-			for (int i = eco.length-1; i>0; i--) 
-				if (withNumbers.startsWith(eco[i-1].substring(0, eco[i-1].indexOf(';')-1))) {
-					ecoNo = i-1;
-					break;
-				}
-
-		if (ecoNo<0)
-			for (int i = eco.length-1; i>0; i--) 
-				if (eco[i].startsWith(withNumbers)) {
-					ecoNo = i;
-					break;
-				}*/
 		if (ecoNo < 0)
 			ecoNo = ecoPartIndex;
 		if (ecoNo >= 0) 
@@ -153,5 +145,5 @@ public class Moves extends Stack<Integer> {
 	    return i;
 	}
 
-	boolean flippedBoard;
+	public boolean flippedBoard;
 }

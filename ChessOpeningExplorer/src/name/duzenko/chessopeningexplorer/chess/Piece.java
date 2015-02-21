@@ -1,4 +1,6 @@
-package name.duzenko.chessopeningexplorer;
+package name.duzenko.chessopeningexplorer.chess;
+
+import name.duzenko.chessopeningexplorer.AppPreferences;
 
 class Piece {
 	int col, row;

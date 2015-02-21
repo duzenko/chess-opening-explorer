@@ -1,4 +1,4 @@
-package name.duzenko.chessopeningexplorer;
+package name.duzenko.chessopeningexplorer.chess;
 
 import java.util.ArrayList;
 
@@ -94,7 +94,7 @@ class Pieces extends ArrayList<Piece> {
 				switch(kind) {
 				case ' ':
 					int dr = row-piece.row;
-					if(fromCol != 0 && Math.abs(dr) == 1 || get(i).col==col && white ^ dr < 0 && Math.abs(dr) < 3)
+					if(fromCol != 0 && (dr==1 && white || dr==-1 && !white)  || piece.col==col && white ^ dr < 0 && Math.abs(dr) < 3)
 						if (checkPiecesBetween(piece, col, row))
 							return piece;
 				break;

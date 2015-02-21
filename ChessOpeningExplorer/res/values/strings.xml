@@ -33,5 +33,6 @@ You also will have an opportunity to see and modify the data being sent."</strin
     <string name="aboutCuckoo">About CuckooChess&#8230;</string>
     <string name="loadingCuckoo">Loading CuckooChess&#8230;</string>
     <string name="action_undo">Undo</string>
+    <string name="reset">Quick return</string>
     
 </resources>

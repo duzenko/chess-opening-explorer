@@ -1,4 +1,4 @@
-package name.duzenko.chessopeningexplorer;
+package name.duzenko.chessopeningexplorer.log;
 
 import java.io.File;
 import java.io.FileNotFoundException;

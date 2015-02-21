@@ -1,8 +1,9 @@
-package name.duzenko.chessopeningexplorer;
+package name.duzenko.chessopeningexplorer.play;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import name.duzenko.chessopeningexplorer.R;
 import chess.ChessParseError;
 import chess.Move;
 import chess.Position;

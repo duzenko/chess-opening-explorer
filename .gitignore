@@ -1,3 +1,10 @@
 .metadata/
 ChessOpeningExplorer/bin/
 ChessOpeningExplorer/gen/
+*.local
+winutils/ChessDatabase/__history/
+*.identcache
+*.~dsk
+winutils/Win32/
+winutils/Win64/
+winutils/dcu/

@@ -7,7 +7,7 @@ public class AppPreferences {
 	
 	static SharedPreferences preferences;
 	
-	static boolean alternativeBoard() {
+	public static boolean alternativeBoard() {
 		return preferences.getBoolean("altBoard", false);
 	}
 	

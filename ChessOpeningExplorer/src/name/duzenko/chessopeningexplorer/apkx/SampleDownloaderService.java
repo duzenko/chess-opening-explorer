@@ -24,9 +24,9 @@ import com.google.android.vending.expansion.downloader.impl.DownloaderService;
  */
 public class SampleDownloaderService extends DownloaderService {
     // stuff for LVL -- MODIFY FOR YOUR APPLICATION!
-    private static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkZE9i9aT1VeTDTHVvxbQ+35cAa1cB3MJ/gvWBDcuLotaG9gf1wu4lFfmCl98Mj1R6+Q12FT8VVo9hSBaIauYHzkFe18XLvI8Q3xSsCU/x/9DFK7DVblh3y6fCyfwVSGpEVL5yN9Sv6lMUqO2SW1gM9cqOU4MVef53OPvG0asaO6kBC7akQN42LM0vUCmAAKbvZGk3QC7r+Z2n1QzYIhmyV52Eon9v41AkFeLHdJ8mbE78frgOwGCoh33TkbMt8OVJP11767ofHkpFXUTg7vzT/jG2Ql/JpTW7sAOtXXcR+1kWSKBhUryF0k5eDiEfn/IYIHU+jYsb/+GEn0M12Pq3wIDAQAB";
+    static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkZE9i9aT1VeTDTHVvxbQ+35cAa1cB3MJ/gvWBDcuLotaG9gf1wu4lFfmCl98Mj1R6+Q12FT8VVo9hSBaIauYHzkFe18XLvI8Q3xSsCU/x/9DFK7DVblh3y6fCyfwVSGpEVL5yN9Sv6lMUqO2SW1gM9cqOU4MVef53OPvG0asaO6kBC7akQN42LM0vUCmAAKbvZGk3QC7r+Z2n1QzYIhmyV52Eon9v41AkFeLHdJ8mbE78frgOwGCoh33TkbMt8OVJP11767ofHkpFXUTg7vzT/jG2Ql/JpTW7sAOtXXcR+1kWSKBhUryF0k5eDiEfn/IYIHU+jYsb/+GEn0M12Pq3wIDAQAB";
     // used by the preference obfuscater
-    private static final byte[] SALT = new byte[] {
+    static final byte[] SALT = new byte[] {
             1, 43, -12, -1, 54, 98,
             -100, -12, 43, 2, -8, -4, 9, 5, -106, -108, -33, 45, -1, 84
     };

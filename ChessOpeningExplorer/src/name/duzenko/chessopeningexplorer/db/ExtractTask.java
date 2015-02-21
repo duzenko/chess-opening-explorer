@@ -1,10 +1,13 @@
-package name.duzenko.chessopeningexplorer;
+package name.duzenko.chessopeningexplorer.db;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import name.duzenko.chessopeningexplorer.MainActivity;
+import name.duzenko.chessopeningexplorer.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -98,13 +101,13 @@ public class ExtractTask extends AsyncTask<Void, Integer, String>{
 	void saveStream(InputStream input, String outName) throws IOException {
 		try {
 		    final File file = new File(Global.dbDir, outName);
-		    try {
-		    	System.out.println("parent file " + file.getParentFile());
-		    	if(!file.getParentFile().mkdirs())
-		    		System.out.println("Failed to create data dir");;
-		    } catch(Exception e) {
-		    	throw new NullPointerException("mkdirs error. " + Global.dbDir + " " + outName + ". " + e.getClass().getSimpleName() + ": " + e.getMessage() + " " + file);
-		    }
+//		    try {
+//		    	System.out.println("parent file " + file.getParentFile());
+//		    	if(!file.getParentFile().mkdirs())
+//		    		System.out.println("Failed to create data dir");;
+//		    } catch(Exception e) {
+//		    	throw new NullPointerException("mkdirs error. " + Global.dbDir + " " + outName + ". " + e.getClass().getSimpleName() + ": " + e.getMessage() + " " + file);
+//		    }
 		    final OutputStream output = new FileOutputStream(file);
 		    System.out.println("save stream " + outName);
 		    try {

@@ -1,13 +1,26 @@
-package name.duzenko.chessopeningexplorer;
+package name.duzenko.chessopeningexplorer.db;
 
 import java.io.File;
+
+import name.duzenko.chessopeningexplorer.MainActivity;
+
+import android.content.Context;
 
 public class Global {
 	
 	static String dbDir, dbTxtFileName, dbTreeFileName, dbTxtName = "ficsgamesdb_2012_standard_nomovetimes_793102.txt", dbTreeName = "ficsgamesdb_2012_standard_nomovetimes_793102.tree";
-	static File dbTxtFile, dbTreeFile;
+	public static File dbTxtFile;
+	public static File dbTreeFile;
 	
-	static String init(String path) {
+	static String init(Context context) {
+		String path = context.getExternalFilesDir("") + File.separator;
+		if (android.os.Build.MANUFACTURER.contains("samsung")) {
+			File f = new File("/storage/extSdCard/Android/data/" + MainActivity.class.getPackage().getName() + "/files/");
+			f.mkdirs();
+			if (f.exists())
+				path = f.getAbsolutePath() + "/";
+		}
+//		String path = context.getExternalFilesDir(null).getAbsolutePath() + File.separator;
 		System.out.println("global init " + path);
 		dbDir = path;
     	dbTxtFileName = path+dbTxtName;

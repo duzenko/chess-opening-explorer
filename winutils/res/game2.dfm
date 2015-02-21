@@ -1,0 +1,1 @@
+TPawnTPawn	TKing	TKing

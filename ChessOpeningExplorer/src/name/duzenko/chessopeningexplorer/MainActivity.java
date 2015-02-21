@@ -3,6 +3,12 @@ package name.duzenko.chessopeningexplorer;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import name.duzenko.chessopeningexplorer.chess.Moves;
+import name.duzenko.chessopeningexplorer.db.ChessOption;
+import name.duzenko.chessopeningexplorer.db.Global;
+import name.duzenko.chessopeningexplorer.db.LoaderActivity;
+import name.duzenko.chessopeningexplorer.play.PlayActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,8 +34,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	
 	RandomAccessFile treeStream, txtStream;
 	
-	int lastOptionNo;
-	ChessOption chessOption = new ChessOption();
+//	ChessMove lastMove;
+	ChessOption chessOption = new ChessOption(0, 0);
 	
     @Override 
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +69,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
     
     String load() throws IOException {
     	optionsStack.clear();
-    	lastOptionNo = 0;
+//    	lastOptionNo = 0;
     	txtStream = new RandomAccessFile(Global.dbTxtFile, "r");
     	treeStream = new RandomAccessFile(Global.dbTreeFile, "r");
     	
@@ -122,6 +128,10 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			startPlay();
 			break;
 
+		case R.id.action_reset:
+			reset();
+			break;
+
 		case R.id.action_search:
 			if (optionsStack.ecoFound == null) {
 				Toast.makeText(this, R.string.ecoNotFound, Toast.LENGTH_LONG).show();
@@ -137,33 +147,61 @@ public class MainActivity extends Activity implements OnItemClickListener {
     	return super.onMenuItemSelected(featureId, item);
     }
     
-    String moveSeq = "";
+    private void reset() {
+    	optionsStack.clear();
+		moveSeq = "";
+		try {
+			showOption();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+//		textMoves.setVisibility(View.GONE);
+	}
+
+	String moveSeq = "";
     
     void refresh() {
 		((ImageView) findViewById(R.id.imageView)).setImageBitmap(optionsStack.generateImage(moveSeq, getResources(), getAssets()));
 		textMoves.setText((optionsStack.ecoFound != null ? (optionsStack.ecoFound[1] + ' ' + optionsStack.ecoFound[2] + '\n') : "") + optionsStack.movesWithNumbers);
     }
     
+    int readMove(int idx, int offset) throws IOException {
+		ChessOption tmp = new ChessOption(idx, offset);
+		tmp.load(treeStream);
+//		ChessMove chessMove = new ChessMove();
+		txtStream.seek(tmp.TxtPos + tmp.TxtOffset);
+		while(true) {
+			char c = (char) txtStream.readByte();
+			if(c==' ' || c==10)
+				break;
+			tmp.move += c; 
+		}
+//		System.arraycopy(tmp.Results, 0, chessMove.stat, 0, tmp.Results.length);
+		arrayAdapter.add(tmp);    
+		return tmp.Next;
+    }
+    
     void showOption() throws IOException {
     	refresh();
-    	ChessOption tmp = new ChessOption();
     	arrayAdapter.clear();
-    	int i = chessOption.First;
-    	while (i!=0) {
-    		ChessMove chessMove = new ChessMove();
-    		chessMove.fileRecNo = i;
-    		treeStream.seek(i*ChessOption.recordSize);
-    		tmp.load(treeStream);
-    		txtStream.seek(tmp.SrcPos);
+    	int idx = chessOption.First;
+    	if(idx==0) {
+    		txtStream.seek(chessOption.TxtPos + chessOption.TxtOffset);
+    		char c;
+    		int offset = 0;
     		while(true) {
-    			char c = (char) txtStream.readByte();
+    			c = (char) txtStream.readByte();
+    			offset++;
     			if(c==' ' || c==10)
     				break;
-    			chessMove.move += c; 
     		}
-    		System.arraycopy(tmp.Results, 0, chessMove.stat, 0, tmp.Results.length);
-    		arrayAdapter.add(chessMove);
-    		i = tmp.Next;
+    		if(c==' ')
+    			readMove(chessOption.fileRecNo, chessOption.TxtOffset + offset);
+    	}
+    	else {
+    		while (idx!=0) {
+    			idx = readMove(idx, 0);
+    		}
     	}
     	arrayAdapter.sort();
     	((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
@@ -171,17 +209,16 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		ChessMove chessMove = arrayAdapter.getItem(position);
+		ChessOption chessMove = arrayAdapter.getItem(position);
     	try {
+//			chessOption.load(treeStream, chessMove.fileRecNo);
     		if(optionsStack.size()>0)
     			moveSeq = moveSeq + " " + chessMove.move;
     		else
     			moveSeq = chessMove.move;
-    		textMoves.setVisibility(View.VISIBLE);
-    		optionsStack.push(lastOptionNo);
-    		lastOptionNo = chessMove.fileRecNo;
-    		treeStream.seek(chessMove.fileRecNo*ChessOption.recordSize);
-			chessOption.load(treeStream);
+//    		textMoves.setVisibility(View.VISIBLE);
+    		optionsStack.push(chessOption);
+    		chessOption = chessMove;
 	    	showOption();
 		} catch (IOException e) {
 			Toast.makeText(this, e.getClass().getSimpleName(), Toast.LENGTH_LONG).show();
@@ -200,12 +237,12 @@ public class MainActivity extends Activity implements OnItemClickListener {
 				moveSeq = s.substring(0, lastSpace);
 			else {
 				moveSeq = "";
-				textMoves.setVisibility(View.GONE);
+//				textMoves.setVisibility(View.GONE);
 			}
-			lastOptionNo = optionsStack.pop();
+			chessOption = optionsStack.pop();
 			try {
-				treeStream.seek(ChessOption.recordSize*lastOptionNo);
-				chessOption.load(treeStream);
+//				treeStream.seek(ChessOption.recordSize*lastOptionNo);
+//				chessOption.load(treeStream, chessOption.fileRecNo);
 				showOption();
 			} catch (IOException e) {
 				Toast.makeText(this, e.getClass().getSimpleName(), Toast.LENGTH_LONG).show();

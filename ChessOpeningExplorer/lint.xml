@@ -7,5 +7,6 @@
         <ignore path="src/name/duzenko/chessopeningexplorer/FileLog.java" />
         <ignore path="src/name/duzenko/chessopeningexplorer/LoaderActivity.java" />
     </issue>
+    <issue id="TypographyEllipsis" severity="ignore" />
     <issue id="UnusedAttribute" severity="ignore" />
 </lint>

@@ -34,7 +34,7 @@ public class SampleAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-    	System.out.println("on receive");
+    	System.out.println("SampleAlarmReceiver on receive");
         try {
             DownloaderClientMarshaller.startDownloadServiceIfRequired(context, intent, SampleDownloaderService.class);
         } catch (NameNotFoundException e) {
