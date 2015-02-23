@@ -8,7 +8,7 @@ import android.content.Context;
 
 public class Global {
 	
-	static String dbDir, dbTxtFileName, dbTreeFileName, dbTxtName = "ficsgamesdb_2012_standard_nomovetimes_793102.txt", dbTreeName = "ficsgamesdb_2012_standard_nomovetimes_793102.tree";
+	static String dbDir, dbTxtFileName, dbTreeFileName, dbTxtName = "ficsgamesdb_2012_standard_nomovetimes_1213340.txt", dbTreeName = "ficsgamesdb_2012_standard_nomovetimes_1213340.tree";
 	public static File dbTxtFile;
 	public static File dbTreeFile;
 	

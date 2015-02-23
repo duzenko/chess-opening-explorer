@@ -43,11 +43,11 @@ public class LoaderActivity extends Activity {
 			new ExtractTask(this).execute();		
 	}
 	
-	public static int obbFileSize = 226863698;
+	public static int obbFileSize = 234301805;
 	public static String obbFileName;
 
 	boolean expansionFilesDelivered() {
-		obbFileName = Helpers.getExpansionAPKFileName(this, true, 20);
+		obbFileName = Helpers.getExpansionAPKFileName(this, true, 21);
 		System.out.println(Helpers.generateSaveFileName(this, obbFileName));
 		return Helpers.doesFileExist(this, obbFileName, obbFileSize, false);
 	}
