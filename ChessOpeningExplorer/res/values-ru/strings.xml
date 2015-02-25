@@ -29,6 +29,8 @@ You also will have an opportunity to see and modify the data being sent."
     </string>
     <string name="title_activity_settings">Настройки</string>
     <string name="alternativeBoard">Альтернативный вид доски</string>
+    <string name="hideActionBar">Убрать ActionBar</string>
+    <string name="timeLimit">Время на ход компьютеру</string>
     <string name="search">Искать дебют в Google</string>
     <string name="ecoNotFound">Имя дебюта не определено. Поиск не возможен</string>
     <string name="title_activity_play">CuckooChess</string>

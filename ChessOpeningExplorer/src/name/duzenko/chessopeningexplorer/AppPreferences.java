@@ -17,4 +17,24 @@ public class AppPreferences {
 		editor.commit();
 	}
 
+	public static boolean hideActionBar() {
+		return preferences.getBoolean("hideActionBar", false);
+	}
+	
+	static void setHideActionBar(boolean value) {
+		Editor editor = preferences.edit();
+		editor.putBoolean("hideActionBar", value);
+		editor.commit();
+	}
+
+	public static int timeLimit() {
+		return preferences.getInt("timeLimit", 5);
+	}
+	
+	static void setTimeLimit(int value) {
+		Editor editor = preferences.edit();
+		editor.putInt("timeLimit", value);
+		editor.commit();
+	}
+
 }

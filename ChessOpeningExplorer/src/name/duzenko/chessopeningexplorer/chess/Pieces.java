@@ -120,8 +120,8 @@ class Pieces extends ArrayList<Piece> {
 		}
 		
 		void parseMove(String move, boolean white) {
-			if (move.equals("c5") && !white)
-				System.out.println('"' + move + '"');
+//			if (move.equals("c5") && !white)
+//				System.out.println('"' + move + '"');
 			if(move.equals("O-O")) {
 				if(white) {
 					whiteKing.col = 7;

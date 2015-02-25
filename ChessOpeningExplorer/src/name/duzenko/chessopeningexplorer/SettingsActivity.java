@@ -3,11 +3,14 @@ package name.duzenko.chessopeningexplorer;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class SettingsActivity extends Activity {
 
-	ToggleButton altBoard;
+	ToggleButton altBoard, hideActionBar;
+	EditText timeLimit;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -15,11 +18,21 @@ public class SettingsActivity extends Activity {
 		setContentView(R.layout.activity_settings);
 		altBoard = (ToggleButton) findViewById(R.id.toggleAltBoard);
 		altBoard.setChecked(AppPreferences.alternativeBoard());
+		hideActionBar = (ToggleButton) findViewById(R.id.toggleActionBar);
+		hideActionBar.setChecked(AppPreferences.hideActionBar());
+		timeLimit = (EditText) findViewById(R.id.editTimeLimit);
+		timeLimit.setText(String.valueOf(AppPreferences.timeLimit()));
 	}
 	
 	@Override
 	protected void onPause() {
 		AppPreferences.setAlternativeBoard(altBoard.isChecked());
+		AppPreferences.setHideActionBar(hideActionBar.isChecked());
+		try {
+			AppPreferences.setTimeLimit(Integer.valueOf(timeLimit.getText().toString()));
+		} catch(Exception exception) {
+			Toast.makeText(this, "Invalid integer string", Toast.LENGTH_SHORT).show();
+		}
 		super.onPause();
 	}
 

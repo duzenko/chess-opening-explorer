@@ -3,6 +3,7 @@ package name.duzenko.chessopeningexplorer.play;
 import java.util.ArrayList;
 import java.util.List;
 
+import name.duzenko.chessopeningexplorer.AppPreferences;
 import name.duzenko.chessopeningexplorer.R;
 import chess.ChessParseError;
 import chess.Move;
@@ -106,6 +107,7 @@ public class PlayActivity extends Activity implements GUIInterface {
 				chessFont = Typeface.createFromAsset(getAssets(), "casefont.ttf");
             SharedPreferences settings = getSharedPreferences("", MODE_PRIVATE);
             playerWhite = !settings.getBoolean("flipped", false);
+            cb.setFlipped(!playerWhite);
 	        ctrl = new ChessController(PlayActivity.this);
 	        ctrl.newGame(playerWhite, ttLogSize, false);
 	        {
@@ -190,7 +192,7 @@ public class PlayActivity extends Activity implements GUIInterface {
 
 	@Override
 	public int timeLimit() {
-		return 5000;
+		return 1000*AppPreferences.timeLimit();
 	}
 
 	@Override

@@ -37,7 +37,12 @@ public class MoveAdapter extends ArrayAdapter<ChessOption> {
         TextView textView = (TextView) convertView.findViewById(R.id.textMove);
         textView.setText(chessMove.move);
         textView = (TextView) convertView.findViewById(R.id.textStat);
-        textView.setText(String.valueOf(chessMove.stat[0]) + "w " + String.valueOf(chessMove.stat[2]) + "d " + String.valueOf(chessMove.stat[1]) + "b");
+//        textView.setText(String.valueOf(chessMove.stat[0]) + "w " + String.valueOf(chessMove.stat[2]) + "d " + String.valueOf(chessMove.stat[1]) + "b");
+        textView.setText(String.valueOf(chessMove.stat[0] + chessMove.stat[2] + chessMove.stat[1]));
+        StatView statView = (StatView) convertView.findViewById(R.id.statView);
+        statView.stat[0] = chessMove.stat[0];
+        statView.stat[1] = chessMove.stat[2];
+        statView.stat[2] = chessMove.stat[1];
 
         return convertView;
     }

@@ -9,6 +9,7 @@ import name.duzenko.chessopeningexplorer.db.Global;
 import name.duzenko.chessopeningexplorer.db.LoaderActivity;
 import name.duzenko.chessopeningexplorer.play.PlayActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,7 +36,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	RandomAccessFile treeStream, txtStream;
 	
 //	ChessMove lastMove;
-	ChessOption chessOption = new ChessOption(0, 0);
+	ChessOption chessOption;
 	
     @Override 
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +69,9 @@ public class MainActivity extends Activity implements OnItemClickListener {
     }
     
     String load() throws IOException {
-    	optionsStack.clear();
-//    	lastOptionNo = 0;
     	txtStream = new RandomAccessFile(Global.dbTxtFile, "r");
     	treeStream = new RandomAccessFile(Global.dbTreeFile, "r");
-    	
-    	chessOption.load(treeStream);
-    	
-    	showOption();
+    	reset();
     	return null;
     }
     
@@ -88,9 +84,15 @@ public class MainActivity extends Activity implements OnItemClickListener {
     	txtStream = null;
     }
     
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     protected void onResume() {
     	super.onResume();
+    	if (android.os.Build.VERSION.SDK_INT >= 11)
+    		if (AppPreferences.hideActionBar())
+    			getActionBar().hide();
+    		else
+    			getActionBar().show();
     	refresh();
     }
     
@@ -149,8 +151,10 @@ public class MainActivity extends Activity implements OnItemClickListener {
     
     private void reset() {
     	optionsStack.clear();
+    	chessOption = new ChessOption(0, 0);
 		moveSeq = "";
 		try {
+	    	chessOption.load(treeStream);
 			showOption();
 		} catch (IOException e) {
 			e.printStackTrace();

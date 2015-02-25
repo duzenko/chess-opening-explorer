@@ -381,8 +381,7 @@ public class SampleDownloaderActivity extends Activity implements IDownloaderCli
         progress.mOverallTotal = progress.mOverallTotal;
         mPB.setMax((int) (progress.mOverallTotal >> 8));
         mPB.setProgress((int) (progress.mOverallProgress >> 8));
-        mProgressPercent.setText(Long.toString(progress.mOverallProgress
-                * 100 / progress.mOverallTotal) + "%");
+        mProgressPercent.setText(Long.toString(progress.mOverallProgress * 100 / progress.mOverallTotal) + "%");
         mProgressFraction.setText(Helpers.getDownloadProgressString(progress.mOverallProgress, progress.mOverallTotal));
     }
 
