@@ -122,6 +122,8 @@ class Pieces extends ArrayList<Piece> {
 		void parseMove(String move, boolean white) {
 //			if (move.equals("c5") && !white)
 //				System.out.println('"' + move + '"');
+			if (move.endsWith("+") || move.endsWith("#"))
+				move = move.substring(0, move.length()-1);
 			if(move.equals("O-O")) {
 				if(white) {
 					whiteKing.col = 7;
@@ -147,8 +149,6 @@ class Pieces extends ArrayList<Piece> {
 				move = ' ' + move;
 				ck = ' ';
 			}
-			if (move.endsWith("+") || move.endsWith("#"))
-				move = move.substring(0, move.length()-1);
 			int col = getCol(move.charAt(move.length()-2)), row = getRow(move.charAt(move.length()-1)), fromCol = 0, fromRow = 0;
 			move = move.replace("x", "");
 			if(move.length()>3)

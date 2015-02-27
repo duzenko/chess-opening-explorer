@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -90,7 +91,10 @@ public class MainActivity extends Activity implements OnItemClickListener {
     	super.onResume();
     	if (android.os.Build.VERSION.SDK_INT >= 11)
     		if (AppPreferences.hideActionBar())
-    			getActionBar().hide();
+    			if (ViewConfiguration.get(this).hasPermanentMenuKey())
+    				getActionBar().hide();
+    			else
+    				Toast.makeText(this, "No Menu key found. Option to hide ActionBar ignored", Toast.LENGTH_SHORT).show();
     		else
     			getActionBar().show();
     	refresh();
