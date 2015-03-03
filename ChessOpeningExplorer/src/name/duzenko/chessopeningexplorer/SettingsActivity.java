@@ -1,9 +1,11 @@
 package name.duzenko.chessopeningexplorer;
 
+import name.duzenko.chessopeningexplorer.db.Global;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -22,6 +24,7 @@ public class SettingsActivity extends Activity {
 		hideActionBar.setChecked(AppPreferences.hideActionBar());
 		timeLimit = (EditText) findViewById(R.id.editTimeLimit);
 		timeLimit.setText(String.valueOf(AppPreferences.timeLimit()));
+		((TextView)findViewById(R.id.textDbPath)).setText(Global.dbDir);
 	}
 	
 	@Override

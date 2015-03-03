@@ -26,7 +26,7 @@ public class StatView extends View {
         super(context, attrs);
         paint.setStyle(Style.FILL);
         paint.setTextAlign(Align.CENTER);
-        paint.setTextSize(36);
+        paint.setTextSize(16 * getResources().getDisplayMetrics().density);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class StatView extends View {
         	if (tw > sw)
         		continue;
         	paint.setColor(Color.WHITE);
-        	canvas.drawText(text, (r.left + r.right)/2, r.height()-8, paint);
+        	canvas.drawText(text, (r.left + r.right)/2, r.height()-12, paint);
         }
     }
 

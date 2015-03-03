@@ -185,7 +185,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			tmp.move += c; 
 		}
 //		System.arraycopy(tmp.Results, 0, chessMove.stat, 0, tmp.Results.length);
-		arrayAdapter.add(tmp);    
+		if(tmp.move.length() > 0)
+			arrayAdapter.add(tmp);    
 		return tmp.Next;
     }
     

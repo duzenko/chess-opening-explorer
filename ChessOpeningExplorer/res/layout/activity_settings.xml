@@ -66,4 +66,14 @@
         android:text="@string/timeLimit"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <TextView
+        android:id="@+id/textDbPath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView02"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/editTimeLimit"
+        android:text="@string/timeLimit"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </RelativeLayout>

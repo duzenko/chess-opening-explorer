@@ -112,7 +112,12 @@ class Pieces extends ArrayList<Piece> {
 						if (checkPiecesBetween(piece, col, row))
 							return piece;
 					break;
-				case 'Q': case 'K':
+				case 'Q': 
+					if(Math.abs(piece.col-col) == Math.abs(piece.row-row) || piece.col==col || piece.row==row)
+						if (checkPiecesBetween(piece, col, row))
+							return piece;
+					break;
+				case 'K':
 					return get(i);					
 				}
 			}
@@ -120,8 +125,8 @@ class Pieces extends ArrayList<Piece> {
 		}
 		
 		void parseMove(String move, boolean white) {
-//			if (move.equals("c5") && !white)
-//				System.out.println('"' + move + '"');
+			if (move.equals("Qe1+") && !white)
+				System.out.println('"' + move + '"');
 			if (move.endsWith("+") || move.endsWith("#"))
 				move = move.substring(0, move.length()-1);
 			if(move.equals("O-O")) {
@@ -149,6 +154,11 @@ class Pieces extends ArrayList<Piece> {
 				move = ' ' + move;
 				ck = ' ';
 			}
+			char promoteTo = ' ';
+			if(move.length()>=4 && move.charAt(move.length()-2) == '=') {
+				promoteTo = move.charAt(move.length()-1);
+				move = move.substring(0, move.length() - 2);
+			}
 			int col = getCol(move.charAt(move.length()-2)), row = getRow(move.charAt(move.length()-1)), fromCol = 0, fromRow = 0;
 			move = move.replace("x", "");
 			if(move.length()>3)
@@ -170,6 +180,9 @@ class Pieces extends ArrayList<Piece> {
 				//System.out.println(piece.col + " " + piece.row + " " + col + " " + row);
 				piece.col = col;
 				piece.row = row;
+			}
+			if(promoteTo != ' ') {
+				piece.kind = promoteTo;
 			}
 		}
 	}
