@@ -82,6 +82,43 @@ class Pieces extends ArrayList<Piece> {
 			return false;
 		}
 		
+		boolean kingSafe(boolean white, int fromCol, int fromRow) {
+			for (int i = 0; i < size(); i++) {
+				Piece king = get(i);
+				if(king.white != white || king.kind != 'K')
+					continue;
+				if(king.row - fromRow != 0 && king.col - fromCol != 0 && Math.abs(king.col - fromCol) != (king.row - fromRow))
+					continue;
+				int dc = (int) Math.signum(fromRow - king.row), dr = (int) Math.signum(fromCol - king.col);
+				while(true) {
+					fromCol += dc;
+					fromRow += dr;
+					if(fromCol < 1 || fromRow < 1 || fromCol > 8 || fromRow > 8)
+						break;
+					for (int j = 0; j < size(); j++) {
+						Piece piece = get(j);
+						if(piece.col != fromCol || piece.row != fromRow)
+							continue;
+						if(piece.white == white)
+							return true;
+						else
+							switch(piece.kind) {
+							case 'B': 
+								if(Math.abs(dr) == Math.abs(dc))
+									return false;
+							case 'R': 
+								if(dr == 0 || dc == 0)
+									return false;
+							case 'Q':
+								if(Math.abs(dr) == Math.abs(dc) || dr == 0 || dc == 0)
+									return false;
+							}
+					}
+				}
+			}
+			return true;
+		}
+		
 		Piece getPiece(int col, int row, int fromCol, int fromRow, char kind, boolean white) {
 			for(int i=0; i<size(); i++) {
 				Piece piece = get(i);
@@ -100,7 +137,8 @@ class Pieces extends ArrayList<Piece> {
 				break;
 				case 'N':
 					if(Math.abs(get(i).col-col) + Math.abs(get(i).row-row) == 3 && get(i).row!=row && get(i).col!=col)
-						return get(i);					
+						if(kingSafe(white, piece.col, piece.row))
+							return get(i);					
 					break;
 				case 'B':
 					if(Math.abs(get(i).col-col) == Math.abs(get(i).row-row))

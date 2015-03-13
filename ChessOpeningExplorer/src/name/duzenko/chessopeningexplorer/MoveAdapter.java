@@ -43,6 +43,7 @@ public class MoveAdapter extends ArrayAdapter<ChessOption> {
         statView.stat[0] = chessMove.stat[0];
         statView.stat[1] = chessMove.stat[2];
         statView.stat[2] = chessMove.stat[1];
+        statView.invalidate();
 
         return convertView;
     }

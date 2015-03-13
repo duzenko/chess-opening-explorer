@@ -15,9 +15,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -67,6 +69,14 @@ public class MainActivity extends Activity implements OnItemClickListener {
     		finish();
     		return;
     	}
+    	findViewById(R.id.imageView).setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				openOptionsMenu(); 
+				return false;
+			}
+		});
     }
     
     String load() throws IOException {
@@ -85,17 +95,16 @@ public class MainActivity extends Activity implements OnItemClickListener {
     	txtStream = null;
     }
     
-    @SuppressLint("NewApi")
+	@SuppressLint("NewApi")
 	@Override
     protected void onResume() {
     	super.onResume();
     	if (android.os.Build.VERSION.SDK_INT >= 11)
-    		if (AppPreferences.hideActionBar())
-    			if (ViewConfiguration.get(this).hasPermanentMenuKey())
-    				getActionBar().hide();
-    			else
-    				Toast.makeText(this, "No Menu key found. Option to hide ActionBar ignored", Toast.LENGTH_SHORT).show();
-    		else
+    		if (AppPreferences.hideActionBar()) {
+    			getActionBar().hide();
+	    		if (!ViewConfiguration.get(this).hasPermanentMenuKey())
+	    			Toast.makeText(this, "No Menu key found. Use long click on the chess board to popup the menu", Toast.LENGTH_SHORT).show();
+    		} else
     			getActionBar().show();
     	refresh();
     }
@@ -264,6 +273,13 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		optionsStack.flippedBoard = !optionsStack.flippedBoard;
 		refresh();
 	}
+	
+	
+	public void MovesClick(View view) {
+		if(listView.getAdapter().getCount() > 0)
+			onItemClick(listView, listView, 0, 0);
+	}
+	
 	
 	void startPlay() {
 		SharedPreferences settings = getSharedPreferences("", MODE_PRIVATE);

@@ -4,44 +4,42 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
     <ImageView
         android:id="@+id/imageView"
-		android:layout_height="fill_parent" 
-		android:layout_weight="1"        
-		android:layout_width="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
         android:adjustViewBounds="true"
+        android:layout_weight="1"
         android:contentDescription="@+id/action_settings"
         android:onClick="BoardClick"
         android:src="@drawable/chessboard" />
 
     <LinearLayout
         android:id="@+id/bottom"
-		android:layout_height="fill_parent" 
-		android:layout_weight="1"        
-		android:layout_width="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
         android:orientation="vertical" >
+        
+        <TextView
+            android:id="@+id/textMoves"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#40ffff00"
+            android:onClick="MovesClick"
+            android:clickable="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/textMoves"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#40ffff00"
-                android:visibility="visible"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        	    <ListView
-	        android:id="@+id/listView"
-	        android:layout_width="match_parent"
-	        android:layout_height="fill_parent"
-	        >
-	
-	    </ListView>
-
-    </LinearLayout>
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </ListView>
+        
+</LinearLayout>
 
 </LinearLayout>
