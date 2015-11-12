@@ -4,16 +4,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Stack;
 
-import name.duzenko.chessopeningexplorer.AppPreferences;
-import name.duzenko.chessopeningexplorer.R;
 import name.duzenko.chessopeningexplorer.db.ChessOption;
 import android.content.res.AssetManager;
 import android.content.res.AssetManager.AssetInputStream;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
@@ -33,7 +28,7 @@ public class Moves extends Stack<ChessOption> {
 	
 	public Bitmap generateImage(String moveString, Resources res, AssetManager assetManager) {
 		movesWithNumbers.setLength(0);
-		Pieces pieces = new Pieces();
+//		Pieces pieces = new Pieces();
 		if(moveString.length()>0) {
 			String moves[] = moveString.split(" ");
 			boolean white = true;
@@ -43,56 +38,55 @@ public class Moves extends Stack<ChessOption> {
 				movesWithNumbers.append(moves[i]);
 				if (i < moves.length - 1)
 					movesWithNumbers.append(' ');
-				pieces.parseMove(moves[i], white);
+//				pieces.parseMove(moves[i], white);
 				white = !white;
 			}
 		}
-		
-		int borderWidth = AppPreferences.alternativeBoard()?0:8; 
-		if(chessBoard==null) {
-			System.out.println("Loading the chess board...");
-			if (AppPreferences.alternativeBoard())
-				chessBoard = BitmapFactory.decodeResource(res, R.drawable.original2);
-			else
-				chessBoard = BitmapFactory.decodeResource(res, R.drawable.chess1);
-			System.out.println("chessboard " + chessBoard.getWidth() + " " + chessBoard.getHeight());
-			output = chessBoard.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
-			cellSize = (chessBoard.getWidth() - 2*borderWidth) / 8f;
-		}
-		
 		getOpeningName(assetManager);
-		
-        Canvas canvas = new Canvas(output);
-        if (flippedBoard) {
-        	Matrix mx = new Matrix();
-        	mx.setRotate(180, chessBoard.getWidth()/2, chessBoard.getHeight()/2);
-        	canvas.drawBitmap(chessBoard, mx, null);
-        } else
-        	canvas.drawBitmap(chessBoard, 0, 0, null);
-        paint.setTextSize(24);
-        for(char c=1; c<=8; c++) {
-        	canvas.drawText(Character.toString((char) (!flippedBoard?'a'+c-1:'h'-c+1)), borderWidth + (c-0.2f)*cellSize, borderWidth + 17, paint);
-        	canvas.drawText(Character.toString((char) (!flippedBoard?'8'-c+1:'1'+c-1)), borderWidth + 1, borderWidth + (c-0.1f)*cellSize, paint);
-        }
-        for(int i=0; i<pieces.size(); i++) {
-        	Piece piece = pieces.get(i);
-        	Bitmap pieceBitmap = pieceImages.get(piece.getPng());
-        	if (pieceBitmap==null) {
-        		try {
-					pieceBitmap = BitmapFactory.decodeStream(assetManager.open("pieces/" + piece.getPng()));
-					pieceImages.put(piece.getPng(), pieceBitmap);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}        		
-        	}
-        	int x = flippedBoard ? 8-piece.col : piece.col-1, y = flippedBoard ? piece.row-1 : 8-piece.row;
-        	dstPiece.left = borderWidth + x * cellSize; 
-        	dstPiece.right = borderWidth + (x+1) * cellSize; 
-        	dstPiece.top = borderWidth + y * cellSize; 
-        	dstPiece.bottom = borderWidth + (y+1) * cellSize; 
-            canvas.drawBitmap(pieceBitmap, null, dstPiece, null);
-        }
-		return output;
+//				
+//		int borderWidth = AppPreferences.alternativeBoard()?0:8; 
+//		if(chessBoard==null) {
+//			System.out.println("Loading the chess board...");
+//			if (AppPreferences.alternativeBoard())
+//				chessBoard = BitmapFactory.decodeResource(res, R.drawable.original2);
+//			else
+//				chessBoard = BitmapFactory.decodeResource(res, R.drawable.chess1);
+//			System.out.println("chessboard " + chessBoard.getWidth() + " " + chessBoard.getHeight());
+//			output = chessBoard.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
+//			cellSize = (chessBoard.getWidth() - 2*borderWidth) / 8f;
+//		}
+//		
+//        Canvas canvas = new Canvas(output);
+//        if (flippedBoard) {
+//        	Matrix mx = new Matrix();
+//        	mx.setRotate(180, chessBoard.getWidth()/2, chessBoard.getHeight()/2);
+//        	canvas.drawBitmap(chessBoard, mx, null);
+//        } else
+//        	canvas.drawBitmap(chessBoard, 0, 0, null);
+//        paint.setTextSize(24);
+//        for(char c=1; c<=8; c++) {
+//        	canvas.drawText(Character.toString((char) (!flippedBoard?'a'+c-1:'h'-c+1)), borderWidth + (c-0.2f)*cellSize, borderWidth + 17, paint);
+//        	canvas.drawText(Character.toString((char) (!flippedBoard?'8'-c+1:'1'+c-1)), borderWidth + 1, borderWidth + (c-0.1f)*cellSize, paint);
+//        }
+//        for(int i=0; i<pieces.size(); i++) {
+//        	Piece piece = pieces.get(i);
+//        	Bitmap pieceBitmap = pieceImages.get(piece.getPng());
+//        	if (pieceBitmap==null) {
+//        		try {
+//					pieceBitmap = BitmapFactory.decodeStream(assetManager.open("pieces/" + piece.getPng()));
+//					pieceImages.put(piece.getPng(), pieceBitmap);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}        		
+//        	}
+//        	int x = flippedBoard ? 8-piece.col : piece.col-1, y = flippedBoard ? piece.row-1 : 8-piece.row;
+//        	dstPiece.left = borderWidth + x * cellSize; 
+//        	dstPiece.right = borderWidth + (x+1) * cellSize; 
+//        	dstPiece.top = borderWidth + y * cellSize; 
+//        	dstPiece.bottom = borderWidth + (y+1) * cellSize; 
+//            canvas.drawBitmap(pieceBitmap, null, dstPiece, null);
+//        }
+		return null;
 	}
 
 	void getOpeningName(AssetManager assetManager) {
@@ -145,5 +139,4 @@ public class Moves extends Stack<ChessOption> {
 	    return i;
 	}
 
-	public boolean flippedBoard;
 }

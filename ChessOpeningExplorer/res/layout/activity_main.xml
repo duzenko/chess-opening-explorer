@@ -7,20 +7,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:adjustViewBounds="true"
+	<view
+		class="name.duzenko.chessopeningexplorer.play.ChessBoard"
+    	android:id="@+id/chessboard"
         android:layout_weight="1"
-        android:contentDescription="@+id/action_settings"
-        android:onClick="BoardClick"
-        android:src="@drawable/chessboard" />
+	    android:layout_width="match_parent"
+    	android:layout_height="match_parent"/>
 
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical" >
         

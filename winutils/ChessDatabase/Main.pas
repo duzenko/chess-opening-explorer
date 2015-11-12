@@ -33,12 +33,17 @@ type
     lSnapshot: TLabel;
     RadioGroup1: TRadioGroup;
     Button4: TButton;
+    Edit1: TEdit;
+    Button5: TButton;
+    OpenDialog1: TOpenDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
     Thread: TConvertThread;
     LastLines: Integer;
@@ -61,6 +66,7 @@ uses TreeView;
 procedure TForm2.Button1Click(Sender: TObject);
 begin
   LastLines := 0;
+  TConvertThread.pgn := Edit1.Text;
   TOption.TotalMoves := 0;
   dtStart := Now;
   Timer1.Enabled := true;
@@ -86,6 +92,17 @@ end;
 procedure TForm2.Button4Click(Sender: TObject);
 begin
   fTreeView.ShowModal;
+end;
+
+procedure TForm2.Button5Click(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+    Edit1.Text := OpenDialog1.FileName;
+end;
+
+procedure TForm2.FormCreate(Sender: TObject);
+begin
+  Edit1.Text := TConvertThread.pgn;
 end;
 
 procedure TForm2.FormDestroy(Sender: TObject);

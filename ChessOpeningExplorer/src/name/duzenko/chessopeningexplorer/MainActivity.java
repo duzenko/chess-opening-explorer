@@ -1,12 +1,22 @@
 package name.duzenko.chessopeningexplorer;
 
+import guibase.ChessController;
+import guibase.GUIInterface;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.List;
+
+import chess.Move;
+import chess.Position;
+import chess.TextIO;
 
 import name.duzenko.chessopeningexplorer.chess.Moves;
 import name.duzenko.chessopeningexplorer.db.ChessOption;
 import name.duzenko.chessopeningexplorer.db.Global;
 import name.duzenko.chessopeningexplorer.db.LoaderActivity;
+import name.duzenko.chessopeningexplorer.play.ChessBoard;
+import name.duzenko.chessopeningexplorer.play.Loader;
 import name.duzenko.chessopeningexplorer.play.PlayActivity;
 
 import android.annotation.SuppressLint;
@@ -15,21 +25,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnItemClickListener {
+public class MainActivity extends Activity implements OnItemClickListener, GUIInterface {
 
 	TextView textMoves;
 	ListView listView;
@@ -41,7 +51,46 @@ public class MainActivity extends Activity implements OnItemClickListener {
 //	ChessMove lastMove;
 	ChessOption chessOption;
 	
-    @Override 
+	ChessController ctrl;
+	ChessBoard cb;
+	List<String> posHistStr;
+	
+	private OnTouchListener cbTouch = new OnTouchListener() {
+		
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			System.out.println(event.getAction());
+            if ((event.getAction() == MotionEvent.ACTION_UP)) {
+                int sq = cb.eventToSquare(event);
+                Move m = cb.mousePressed(sq);
+                if (m != null) {
+                	String s = TextIO.moveToString(cb.getPosition(), m, false);
+                	ChessOption option = arrayAdapter.find(s);
+                	if (option == null)
+                		Toast.makeText(MainActivity.this, String.format(getString(R.string.move_not_in_list), s), Toast.LENGTH_LONG).show();
+                	else {
+                		selectMove(option);
+                		loadController();                		
+                	}
+                }
+                return true; 
+            }
+            return false; // allow long touch
+		}
+		
+	};
+	
+	OnLongClickListener cbLongTouch = new OnLongClickListener() {
+		
+		@Override
+		public boolean onLongClick(View v) {
+			System.out.println("long touch detected");
+			openOptionsMenu();
+			return false;
+		}
+	};
+
+	@Override 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -69,14 +118,34 @@ public class MainActivity extends Activity implements OnItemClickListener {
     		finish();
     		return;
     	}
-    	findViewById(R.id.imageView).setOnLongClickListener(new OnLongClickListener() {
-			
+    	cb = (ChessBoard)findViewById(R.id.chessboard);
+    	ctrl = new ChessController(this);
+		new Loader(this){
 			@Override
-			public boolean onLongClick(View v) {
-				openOptionsMenu(); 
-				return false;
+			protected Void doInBackground(Void... params) {
+		        cb.setFlipped(false);
+		        ctrl = new ChessController(MainActivity.this);
+		        ctrl.newGame(true, PlayActivity.ttLogSize, false);
+		        super.doInBackground(params);
+		        MainActivity.this.posHistStr = posHistStr;
+	            ctrl.setPosHistory(posHistStr);
+	            return null;
 			}
-		});
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+				String s = Global.getMoves();
+				if(s.length()>0) {
+					String moves[] = Global.getMoves().split(" ");
+					for (int i = 0; i < moves.length; i++) {
+						ChessOption chessMove = arrayAdapter.find(moves[i]);
+						selectMove(chessMove);
+					}
+				}
+				loadController();
+			};
+		}.execute();
+    	cb.setOnTouchListener(cbTouch);
+    	cb.setOnLongClickListener(cbLongTouch);
     }
     
     String load() throws IOException {
@@ -145,6 +214,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 		case R.id.action_reset:
 			reset();
+			loadController();
 			break;
 
 		case R.id.action_search:
@@ -156,6 +226,10 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			startActivity(new Intent(Intent.ACTION_VIEW, uri));
 			break;
 
+		case R.id.action_flip:
+			cb.setFlipped(!cb.getFlipped());
+			break;
+			
 		default:
 			break;
 		}
@@ -174,11 +248,42 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		}
 //		textMoves.setVisibility(View.GONE);
 	}
+    
+    void loadController() {
+		String s = Global.getMoves();
+		boolean b = true;
+		if(s.length()>0) { 
+			String moves[] = Global.getMoves().split(" ");
+			b = moves.length % 2 == 0;
+		} 
+    	posHistStr.set(1, moveSeq);
+		ctrl.setPosHistory(posHistStr);
+		ctrl.setHumanWhite(b);
+		System.out.println(b + " " + s);
+        ctrl.startGame(); 
+    }
+    
+    void selectMove(ChessOption chessMove) {
+    	try {
+    		if(optionsStack.size()>0)
+    			moveSeq = moveSeq + " " + chessMove.move;
+    		else
+    			moveSeq = chessMove.move;
+    		Global.setMoves(moveSeq);
+    		optionsStack.push(chessOption);
+    		chessOption = chessMove;
+	    	showOption();
+		} catch (IOException e) {
+			Toast.makeText(this, e.getClass().getSimpleName(), Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		}    	
+    }
 
 	String moveSeq = "";
     
     void refresh() {
-		((ImageView) findViewById(R.id.imageView)).setImageBitmap(optionsStack.generateImage(moveSeq, getResources(), getAssets()));
+//		((ImageView) findViewById(R.id.imageView)).setImageBitmap(
+    	optionsStack.generateImage(moveSeq, getResources(), getAssets());
 		textMoves.setText((optionsStack.ecoFound != null ? (optionsStack.ecoFound[1] + ' ' + optionsStack.ecoFound[2] + '\n') : "") + optionsStack.movesWithNumbers);
     }
     
@@ -200,6 +305,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
     }
     
     void showOption() throws IOException {
+//    	System.out.println(chessOption.move);
     	refresh();
     	arrayAdapter.clear();
     	int idx = chessOption.First;
@@ -228,20 +334,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		ChessOption chessMove = arrayAdapter.getItem(position);
-    	try {
-//			chessOption.load(treeStream, chessMove.fileRecNo);
-    		if(optionsStack.size()>0)
-    			moveSeq = moveSeq + " " + chessMove.move;
-    		else
-    			moveSeq = chessMove.move;
-//    		textMoves.setVisibility(View.VISIBLE);
-    		optionsStack.push(chessOption);
-    		chessOption = chessMove;
-	    	showOption();
-		} catch (IOException e) {
-			Toast.makeText(this, e.getClass().getSimpleName(), Toast.LENGTH_LONG).show();
-			e.printStackTrace();
-		}
+		selectMove(chessMove);
+		loadController();
 	}
 	
 	@Override
@@ -255,25 +349,18 @@ public class MainActivity extends Activity implements OnItemClickListener {
 				moveSeq = s.substring(0, lastSpace);
 			else {
 				moveSeq = "";
-//				textMoves.setVisibility(View.GONE);
 			}
-			chessOption = optionsStack.pop();
+    		Global.setMoves(moveSeq);
+			chessOption = optionsStack.pop(); 
 			try {
-//				treeStream.seek(ChessOption.recordSize*lastOptionNo);
-//				chessOption.load(treeStream, chessOption.fileRecNo);
 				showOption();
 			} catch (IOException e) {
 				Toast.makeText(this, e.getClass().getSimpleName(), Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
+			loadController();
 		}
 	}
-	
-	public void BoardClick(View view) {
-		optionsStack.flippedBoard = !optionsStack.flippedBoard;
-		refresh();
-	}
-	
 	
 	public void MovesClick(View view) {
 		if(listView.getAdapter().getCount() > 0)
@@ -284,12 +371,76 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	void startPlay() {
 		SharedPreferences settings = getSharedPreferences("", MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
-		editor.putString("startFEN", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-		editor.putString("moves", moveSeq);
-		editor.putBoolean("flipped", optionsStack.flippedBoard);
+//		editor.putString("startFEN", );
+		editor.putBoolean("flipped", cb.getFlipped());
 		editor.commit();
 		Intent intent = new Intent(MainActivity.this, PlayActivity.class);
 		startActivity(intent);
+	}
+
+	@Override
+	public void setPosition(Position pos) {
+		cb.setPosition(pos);
+	}
+
+	@Override
+	public void setSelection(int sq) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setStatusString(String str) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMoveListString(String str) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setThinkingString(String str) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int timeLimit() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean randomMode() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean showThinking() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void requestPromotePiece() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void runOnUIThread(Runnable runnable) {
+		// TODO Auto-generated method stub
+		this.runOnUiThread(runnable);
+	}
+
+	@Override
+	public void reportInvalidMove(Move m) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

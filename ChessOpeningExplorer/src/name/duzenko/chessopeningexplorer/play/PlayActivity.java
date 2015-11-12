@@ -1,10 +1,8 @@
 package name.duzenko.chessopeningexplorer.play;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import name.duzenko.chessopeningexplorer.AppPreferences;
 import name.duzenko.chessopeningexplorer.R;
+import name.duzenko.chessopeningexplorer.db.Global;
 import chess.ChessParseError;
 import chess.Move;
 import chess.Position;
@@ -14,13 +12,9 @@ import guibase.GUIInterface;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.view.Menu;
@@ -35,23 +29,40 @@ import android.widget.Toast;
 @SuppressWarnings("deprecation")
 public class PlayActivity extends Activity implements GUIInterface {
 	
-	private static final int ttLogSize = 10;
+	public static final int ttLogSize = 10;
 	protected static final int PROMOTE_DIALOG = 0, CLIPBOARD_DIALOG = 1;
-	private boolean playerWhite;
+	boolean playerWhite;
 	ChessController ctrl;
 	ChessBoard cb;
 	TextView status, moveList, thinking;
-	static Typeface chessFont;
+//	static Typeface chessFont;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_play);
 		cb = (ChessBoard)findViewById(R.id.chessboard);
+    	cb.autoHeight = true;
 		status = (TextView)findViewById(R.id.textStatus);
 		thinking = (TextView)findViewById(R.id.textThinking);
 		moveList = (TextView)findViewById(R.id.textMoves);
-		new Loader().execute();
+		new Loader(this){
+			@Override
+			protected Void doInBackground(Void... params) {
+		        playerWhite = !Global.settings.getBoolean("flipped", false);
+		        cb.setFlipped(!playerWhite);
+		        ctrl = new ChessController(PlayActivity.this);
+		        ctrl.newGame(playerWhite, PlayActivity.ttLogSize, false);
+		        super.doInBackground(params);
+	            ctrl.setPosHistory(posHistStr);
+	            return null;
+			}
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+//		        cb.setFont(PlayActivity.chessFont);					
+		        ctrl.startGame();
+			};
+		}.execute();
         cb.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -87,59 +98,6 @@ public class PlayActivity extends Activity implements GUIInterface {
         });
 	}
 	
-	class Loader extends AsyncTask<Void, Void, Void> {
-		
-		ProgressDialog dialog;
-		
-		@Override
-		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-			super.onPreExecute();
-			dialog = new ProgressDialog(PlayActivity.this);
-			dialog.setTitle(R.string.loadingCuckoo);
-			dialog.show();
-			dialog.setCancelable(false);
-		}
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			if (chessFont == null)
-				chessFont = Typeface.createFromAsset(getAssets(), "casefont.ttf");
-            SharedPreferences settings = getSharedPreferences("", MODE_PRIVATE);
-            playerWhite = !settings.getBoolean("flipped", false);
-            cb.setFlipped(!playerWhite);
-	        ctrl = new ChessController(PlayActivity.this);
-	        ctrl.newGame(playerWhite, ttLogSize, false);
-	        {
-	            String fen = "";
-	            String moves = "";
-	            String numUndo = "0";
-	            String tmp;
-	            tmp = settings.getString("startFEN", null);
-	            if (tmp != null) fen = tmp;
-	            tmp = settings.getString("moves", null);
-	            if (tmp != null) moves = tmp;
-	            tmp = settings.getString("numUndo", null);
-	            if (tmp != null) numUndo = tmp;
-	            List<String> posHistStr = new ArrayList<String>();
-	            posHistStr.add(fen);
-	            posHistStr.add(moves);
-	            posHistStr.add(numUndo);
-	            ctrl.setPosHistory(posHistStr);
-	        }
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void result) {
-	        cb.setFont(chessFont);					
-	        ctrl.startGame();
-	        dialog.cancel();
-			super.onPostExecute(result);
-		}
-		
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

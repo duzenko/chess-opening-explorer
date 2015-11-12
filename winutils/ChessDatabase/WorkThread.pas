@@ -1,4 +1,4 @@
-unit WorkThread;
+unit WorkThread; {$J+}
 
 interface uses
   Windows, Messages, Classes, Vcl.Forms, SysUtils, Contnrs, Math, Generics.Collections;
@@ -47,7 +47,7 @@ type
     Indexing: Boolean;
 //    Reused: String;
   const
-    pgn = 'd:\temp\ficsgamesdb_2012_standard_nomovetimes_1213340.pgn';//ficsgamesdb_2012_standard_nomovetimes_793102.pgn';
+    pgn: string = 'd:\temp\ficsgamesdb_201501_standard2000_nomovetimes_1295906.pgn';//ficsgamesdb_2012_standard_nomovetimes_793102.pgn';
   end;
 
 implementation

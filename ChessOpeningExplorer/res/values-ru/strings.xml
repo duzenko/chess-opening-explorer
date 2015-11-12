@@ -39,5 +39,7 @@ You also will have an opportunity to see and modify the data being sent."
     <string name="loadingCuckoo">Загрузка CuckooChess&#8230;</string>
     <string name="action_undo">Переходить</string>
     <string name="reset">Быстрый возврат</string>
+    <string name="move_not_in_list">Этого хода нет в списке: %s</string>
+    <string name="flip">Перевернуть доску</string>
     
 </resources>

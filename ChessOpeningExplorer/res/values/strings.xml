@@ -36,5 +36,7 @@ You also will have an opportunity to see and modify the data being sent."</strin
     <string name="loadingCuckoo">Loading CuckooChess&#8230;</string>
     <string name="action_undo">Undo</string>
     <string name="reset">Quick return</string>
+    <string name="move_not_in_list">This move is not in the list: %s</string>
+    <string name="flip">Flip board</string>
     
 </resources>

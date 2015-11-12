@@ -18,7 +18,13 @@
 
 package name.duzenko.chessopeningexplorer.play;
 
+import java.io.IOException;
+import java.util.HashMap;
+
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -45,8 +51,12 @@ public class ChessBoard extends View {
     private Paint whitePiecePaint;
     private Paint blackPiecePaint;
     
+    AssetManager assetManager;
+    public boolean autoHeight;
+    
     public ChessBoard(Context context, AttributeSet attrs) {
         super(context, attrs);
+        assetManager = context.getAssets();
         pos = new Position();
         selectedSquare = -1;
         cursorX = cursorY = 0;
@@ -89,6 +99,10 @@ public class ChessBoard extends View {
      * Set the board to a given state.
      * @param pos
      */
+    final public Position getPosition() {
+        return pos;
+    }
+
     final public void setPosition(Position pos) {
         this.pos = pos;
         invalidate();
@@ -98,6 +112,10 @@ public class ChessBoard extends View {
      * Set/clear the board flipped status.
      * @param flipped
      */
+    final public boolean getFlipped() {
+        return flipped;
+    }
+
     final public void setFlipped(boolean flipped) {
         this.flipped = flipped;
         invalidate();
@@ -117,9 +135,12 @@ public class ChessBoard extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if(!autoHeight)
+        	return;
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
         int minSize = Math.min(width, height);
+//        System.out.println(width + " " + height);
         setMeasuredDimension(minSize, minSize);
     }
 
@@ -161,60 +182,74 @@ public class ChessBoard extends View {
         }
     }
 
-    private final void drawPiece(Canvas canvas, int xCrd, int yCrd, int p) {
+	public HashMap<String, Bitmap> pieceImages = new HashMap<String, Bitmap>();
+
+	private final void drawPiece(Canvas canvas, int xCrd, int yCrd, int p) {
         String ps;
         switch (p) {
             case Piece.EMPTY:
                 ps = "";
                 break;
             case Piece.WKING:
-                ps = "k";
+                ps = "wk";
                 break;
             case Piece.WQUEEN:
-                ps = "q";
+                ps = "wq";
                 break;
             case Piece.WROOK:
-                ps = "r";
+                ps = "wr";
                 break;
             case Piece.WBISHOP:
-                ps = "b";
+                ps = "wb";
                 break;
             case Piece.WKNIGHT:
-                ps = "n";
+                ps = "wn";
                 break;
             case Piece.WPAWN:
-                ps = "p";
+                ps = "wp";
                 break;
             case Piece.BKING:
-                ps = "l";
+                ps = "bk";
                 break;
             case Piece.BQUEEN:
-                ps = "w";
+                ps = "bq";
                 break;
             case Piece.BROOK:
-                ps = "t";
+                ps = "br";
                 break;
             case Piece.BBISHOP:
-                ps = "v";
+                ps = "bb";
                 break;
             case Piece.BKNIGHT:
-                ps = "m";
+                ps = "bn";
                 break;
             case Piece.BPAWN:
-                ps = "o";
+                ps = "bp";
                 break;
             default:
                 ps = "?";
                 break;
         }
         if (ps.length() > 0) {
-            Paint paint = Piece.isWhite(p) ? whitePiecePaint : blackPiecePaint;
-            paint.setTextSize(sqSize);
-            Rect bounds = new Rect();
-            paint.getTextBounds(ps, 0, ps.length(), bounds);
-            int xCent = bounds.centerX();
-            int yCent = bounds.centerY();
-            canvas.drawText(ps, xCrd - xCent, yCrd - yCent, paint);
+            ps = "pieces/merida1/"+ps+".png";
+        	Bitmap pieceBitmap = pieceImages.get(ps);
+        	if (pieceBitmap==null) {
+        		try {
+    				pieceBitmap = BitmapFactory.decodeStream(assetManager.open(ps));
+    				pieceImages.put(ps, pieceBitmap);
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}        		
+        	}
+//            Paint paint = Piece.isWhite(p) ? whitePiecePaint : blackPiecePaint;
+//            paint.setTextSize(sqSize);
+//            Rect bounds = new Rect();
+//            paint.getTextBounds(ps, 0, ps.length(), bounds);
+//            int xCent = bounds.centerX();
+//            int yCent = bounds.centerY();
+//            canvas.drawText(ps, xCrd - xCent, yCrd - yCent, paint);
+        	Rect src = new Rect(0, 0, pieceBitmap.getWidth(), pieceBitmap.getHeight()), dst = new Rect(xCrd - sqSize/2, yCrd - sqSize/2, xCrd + sqSize/2, yCrd + sqSize/2);
+            canvas.drawBitmap(pieceBitmap, src, dst, brightPaint);
         }
     }
 
@@ -230,7 +265,7 @@ public class ChessBoard extends View {
      * @param evt Details about the mouse event.
      * @return The square corresponding to the mouse event, or -1 if outside board.
      */
-    final int eventToSquare(MotionEvent evt) {
+    public final int eventToSquare(MotionEvent evt) {
         int xCrd = (int)(evt.getX());
         int yCrd = (int)(evt.getY());
 
@@ -249,7 +284,7 @@ public class ChessBoard extends View {
         return sq;
     }
 
-    final Move mousePressed(int sq) {
+    public final Move mousePressed(int sq) {
         if (sq < 0)
             return null;
         cursorVisible = false;

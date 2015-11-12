@@ -8,14 +8,6 @@ import java.nio.IntBuffer;
 
 public class ChessOption {
 
-	/*static public class ChessMove {
-		public ChessMove(int idx, int offset) {
-		}
-		public int stat[] = {0, 0, 0};
-		int offset;
-	}*/
-
-	
 	public int TxtPos, TxtOffset;
 
 	public int First;

@@ -48,4 +48,12 @@ public class MoveAdapter extends ArrayAdapter<ChessOption> {
         return convertView;
     }
     
+    ChessOption find(String move) {
+    	for (int i = 0; i < getCount(); i++) {
+			if (getItem(i).move.equals(move))
+				return getItem(i);
+		}
+    	return null;
+    }
+    
 }

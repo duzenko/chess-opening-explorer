@@ -11,6 +11,7 @@ object Form2: TForm2
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 14
@@ -156,7 +157,7 @@ object Form2: TForm2
   end
   object Button1: TButton
     Left = 424
-    Top = 8
+    Top = 44
     Width = 97
     Height = 25
     Caption = 'Start'
@@ -165,7 +166,7 @@ object Form2: TForm2
   end
   object Button2: TButton
     Left = 527
-    Top = 8
+    Top = 44
     Width = 97
     Height = 25
     Caption = 'Stop'
@@ -185,12 +186,11 @@ object Form2: TForm2
   end
   object RadioGroup1: TRadioGroup
     Left = 424
-    Top = 39
+    Top = 75
     Width = 185
     Height = 82
     Caption = ' Task '
-    Enabled = False
-    ItemIndex = 1
+    ItemIndex = 0
     Items.Strings = (
       'Convert to TXT'
       'Build TREE')
@@ -205,10 +205,34 @@ object Form2: TForm2
     TabOrder = 4
     OnClick = Button4Click
   end
+  object Edit1: TEdit
+    Left = 184
+    Top = 8
+    Width = 393
+    Height = 22
+    TabOrder = 5
+    Text = 'Edit1'
+  end
+  object Button5: TButton
+    Left = 583
+    Top = 8
+    Width = 41
+    Height = 25
+    Caption = '...'
+    TabOrder = 6
+    OnClick = Button5Click
+  end
   object Timer1: TTimer
     Enabled = False
     OnTimer = Timer1Timer
     Left = 112
     Top = 217
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = 'pgn'
+    Filter = 'PGN files (*.pgn)|*.pgn'
+    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
+    Left = 312
+    Top = 152
   end
 end
