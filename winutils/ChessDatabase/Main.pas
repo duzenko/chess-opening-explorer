@@ -2,8 +2,8 @@ unit Main;
 
 interface uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Math,
-  WorkThread, Vcl.ExtCtrls;
+  Controls, Forms, Dialogs, StdCtrls, Math,
+  WorkThread, ExtCtrls;
 
 type
   TForm2 = class(TForm)
@@ -74,7 +74,7 @@ begin
   Thread := TConvertThread.Create(true);
   Thread.OnTerminate := ThreadTerminated;
   Thread.Indexing := RadioGroup1.ItemIndex = 0;
-  Thread.Start;
+  Thread.Resume;
   Button1.Enabled := false;
   Button2.Enabled := True;
 end;

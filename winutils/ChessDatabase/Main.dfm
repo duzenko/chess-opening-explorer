@@ -190,7 +190,7 @@ object Form2: TForm2
     Width = 185
     Height = 82
     Caption = ' Task '
-    ItemIndex = 0
+    ItemIndex = 1
     Items.Strings = (
       'Convert to TXT'
       'Build TREE')

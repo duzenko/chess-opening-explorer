@@ -8,6 +8,7 @@ import name.duzenko.chessopeningexplorer.play.PlayActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Environment;
 
 public class Global {
 	
@@ -23,12 +24,15 @@ public class Global {
 	static String init(Context context) {
         settings = context.getSharedPreferences("", PlayActivity.MODE_PRIVATE);
 		String path = context.getExternalFilesDir("") + File.separator;
-		if (android.os.Build.MANUFACTURER.contains("samsung")) {
-			File f = new File("/storage/extSdCard/Android/data/" + MainActivity.class.getPackage().getName() + "/files/");
+//		if (android.os.Build.MANUFACTURER.contains("samsung")) {
+			System.out.println("default path " + path);
+			System.out.println("Environment path " + Environment.getExternalStorageDirectory().getPath());
+			System.out.println("SECONDARY_STORAGE path " + System.getenv("SECONDARY_STORAGE"));
+			File f = new File(System.getenv("SECONDARY_STORAGE")+ "/Android/data/" + MainActivity.class.getPackage().getName() + "/files/");
 			f.mkdirs();
 			if (f.exists())
 				path = f.getAbsolutePath() + "/";
-		}
+//		}
 //		String path = context.getExternalFilesDir(null).getAbsolutePath() + File.separator;
 		System.out.println("global init " + path);
 		dbDir = path;

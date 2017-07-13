@@ -46,11 +46,11 @@ public class PlayActivity extends Activity implements GUIInterface {
 		status = (TextView)findViewById(R.id.textStatus);
 		thinking = (TextView)findViewById(R.id.textThinking);
 		moveList = (TextView)findViewById(R.id.textMoves);
+        playerWhite = !Global.settings.getBoolean("flipped", false);
+        cb.setFlipped(!playerWhite);
 		new Loader(this){
 			@Override
 			protected Void doInBackground(Void... params) {
-		        playerWhite = !Global.settings.getBoolean("flipped", false);
-		        cb.setFlipped(!playerWhite);
 		        ctrl = new ChessController(PlayActivity.this);
 		        ctrl.newGame(playerWhite, PlayActivity.ttLogSize, false);
 		        super.doInBackground(params);

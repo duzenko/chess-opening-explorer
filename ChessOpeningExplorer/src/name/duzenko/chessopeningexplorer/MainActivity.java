@@ -60,7 +60,7 @@ public class MainActivity extends Activity implements OnItemClickListener, GUIIn
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			System.out.println(event.getAction());
-            if ((event.getAction() == MotionEvent.ACTION_UP)) {
+            if ((event.getAction() == MotionEvent.ACTION_DOWN)) {
                 int sq = cb.eventToSquare(event);
                 Move m = cb.mousePressed(sq);
                 if (m != null) {
@@ -120,10 +120,10 @@ public class MainActivity extends Activity implements OnItemClickListener, GUIIn
     	}
     	cb = (ChessBoard)findViewById(R.id.chessboard);
     	ctrl = new ChessController(this);
+        cb.setFlipped(false);
 		new Loader(this){
 			@Override
 			protected Void doInBackground(Void... params) {
-		        cb.setFlipped(false);
 		        ctrl = new ChessController(MainActivity.this);
 		        ctrl.newGame(true, PlayActivity.ttLogSize, false);
 		        super.doInBackground(params);

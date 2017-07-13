@@ -1,7 +1,7 @@
 unit WorkThread; {$J+}
 
 interface uses
-  Windows, Messages, Classes, Vcl.Forms, SysUtils, Contnrs, Math, Generics.Collections;
+  Windows, Messages, Classes, Forms, SysUtils, Contnrs, Math;
 
 const
   MoveLength = 7;
@@ -17,6 +17,16 @@ type
   end;
 
   POption = ^TOption;
+
+  TOptionList = class(TList)
+  private
+    function GetItem(Index: Integer): POption;
+  protected
+    procedure Grow; override;
+  public
+    property Items[Index: Integer]: POption read GetItem; default;
+  end;
+
   TOption = record
   private
     procedure ParseContinue();
@@ -29,8 +39,7 @@ type
   class
     var
       ObjectsCreated, TotalMoves: Integer;
-//      Reused: Boolean;
-      All: TList<POption>;
+      All: TOptionList;
       Src: PAnsiChar;
   end;
 
@@ -45,9 +54,8 @@ type
   public
     GamesRead, LinesRead, Progress: Integer;
     Indexing: Boolean;
-//    Reused: String;
   const
-    pgn: string = 'd:\temp\ficsgamesdb_201501_standard2000_nomovetimes_1295906.pgn';//ficsgamesdb_2012_standard_nomovetimes_793102.pgn';
+    pgn: string = 'D:\dev\mobile\chessdb\qwe\2400+.pgn';//'d:\temp\ficsgamesdb_201501_standard2000_nomovetimes_1295906.pgn';//ficsgamesdb_2012_standard_nomovetimes_793102.pgn';
   end;
 
 implementation
@@ -58,7 +66,7 @@ function GetFileSizeEx(hFile: THandle; var FileSize: Int64): BOOL; stdcall; exte
 
 procedure TConvertThread.Execute;
 begin
-  NameThreadForDebugging('TConvertThread');
+  //NameThreadForDebugging('TConvertThread');
   SetThreadAffinityMask(GetCurrentThread, 4);
   LinesRead := 0;
   GamesRead := 0;
@@ -77,9 +85,13 @@ begin
   //Root.Done;
 end;
 
+function SetFilePointerEx(hFile: THandle; liDistanceToMove: Int64;
+    lpNewFilePointer: PInt64; dwMoveMethod: DWORD): BOOL;
+    stdcall; external 'kernel32.dll';
+
 procedure TConvertThread.Index;
 var
-  s, dotless: ansistring;
+  s, NextLine, dotless: ansistring;
   fp, fs: Int64;
   InputInfo: ^TTextRec;
   i, k: Integer;
@@ -94,6 +106,8 @@ begin
     Inc(LinesRead);
     if Length(s)=0 then
       Continue;
+    if Pos(#239#187#191, s) = 1 then
+      Delete(s, 1, 3);
     if s[1] = '[' then
       Continue;
     Inc(GamesRead);
@@ -102,11 +116,26 @@ begin
     Dec(fp, InputInfo.BufSize-InputInfo.BufPos);
     Progress := fp * 100 div fs;
 
+    repeat
+      Readln(Input, NextLine);
+      if NextLine = '' then
+        Break
+      else
+        s := s + ' ' + NextLine;
+    until false;
+
+    // skip games with historic options or timings
+    if Pos('})', s) + Pos('{[', s) > 0 then
+      Continue;
+
+    if Pos('O-Golubev', s) > 0 then
+      Now;
+
     if length(dotless) < length(s) then
       SetLength(dotless, length(s));
     i := 1;
     k := i;
-    while s[i]<>'{' do begin
+    while not (s[i] in ['{', #0]) do begin
       dotless[k] := s[i];
       if dotless[k]='.' then begin
         while (k>0) and (dotless[k]<>' ') do
@@ -117,6 +146,10 @@ begin
       Inc(i);
       Inc(k);
     end;
+    if s[i] = #0 then // delete trailing 1-0, etc
+      repeat
+        Dec(k);
+      until dotless[k] = ' ';
     if k>2 then
       Write(FTxt, s[length(s)], Copy(dotless, 2, k-2), #10);
   end;
@@ -140,7 +173,7 @@ begin
   SharedHandle := CreateFileMapping(InputInfo.Handle, nil, PAGE_READONLY, 0, fs, nil);
   TOption.Src := MapViewOfFile(SharedHandle, FILE_MAP_READ, 0, 0, fs);
   txtPos := 0;
-  TOption.All := TList<POption>.Create;
+  TOption.All := TOptionList.Create;
   New(Root);
   Root.Init;
   TOption.All.Add(Root);
@@ -205,7 +238,7 @@ end;
 
 function TOption.Get(txtPos: Cardinal; var Reused: Boolean): POption;
 var
-  p: Integer;
+  p: Cardinal;
   identical: Boolean;
   I: Cardinal;
 begin
@@ -225,12 +258,16 @@ begin
 
       if (identical) then begin // return an existing child
         Reused := True;
-        Exit(All[p]);
+        Result := All[p];
+        Exit;
       end;
       
       if All[p].Next = 0 then  // loop break
         Break;
-        
+
+      if All[p].Next < p then
+        Now;
+
       p := All[p].Next; // next loop
     until false;
     
@@ -273,6 +310,18 @@ begin
     Results := self.Results;
 //    SrcNo := self.SrcNo;
   end;
+end;
+
+{ TOptionList }
+
+function TOptionList.GetItem(Index: Integer): POption;
+begin
+  Result := inherited Items[Index];
+end;
+
+procedure TOptionList.Grow;
+begin
+  SetCapacity(1536*1024*1024 div SizeOf(TOption));
 end;
 
 end.

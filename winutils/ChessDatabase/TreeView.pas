@@ -1,11 +1,17 @@
 unit TreeView;
 
 interface uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, AnsiStrings, Generics.Collections, uitypes,
-  WorkThread, Vcl.ComCtrls, Vcl.StdCtrls;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics,
+  Controls, Forms, Dialogs,
+  WorkThread, ComCtrls, StdCtrls, Contnrs;
 
 type
+  TCardinalStack = class(TStack)
+    procedure Clear;
+    function Pop: Cardinal;
+    function Push(AItem: Cardinal): Cardinal;
+  end;
+
   TfTreeView = class(TForm)
     ListView1: TListView;
     Button3: TButton;
@@ -22,7 +28,7 @@ type
     FOption: TOption;
     SharedHandle: THandle;
     FTxt: TFileStream;
-    Stack: TStack<Cardinal>;
+    Stack: TCardinalStack;
     LastOptionNo: Cardinal;
     procedure ShowOption;
     procedure ReadTree(node: TTreeNode; first: DWORD);
@@ -47,7 +53,7 @@ end;
 
 procedure TfTreeView.FormShow(Sender: TObject);
 begin
-  Stack := TStack<Cardinal>.Create();
+  Stack := TCardinalStack.Create();
   AssignFile(tree, ChangeFileExt(TConvertThread.pgn, '.tree'));
   Reset(tree);
   FTxt := TFileStream.Create(ChangeFileExt(TConvertThread.pgn, '.txt'), fmOpenRead);
@@ -184,6 +190,23 @@ begin
     end;
     i := tmp.Next;
   end;
+end;
+
+{ TCardinalStack }
+
+procedure TCardinalStack.Clear;
+begin
+  List.Clear;
+end;
+
+function TCardinalStack.Pop: Cardinal;
+begin
+  Result := Cardinal(inherited Pop);
+end;
+
+function TCardinalStack.Push(AItem: Cardinal): Cardinal;
+begin
+  Result := Cardinal(inherited Push(pointer(AItem)));
 end;
 
 end.
